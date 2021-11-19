@@ -11,3 +11,28 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.bgpic{
+  background-image: url(./images//electric-car.jpg);
+  height:100vh;
+}
+.login-nav-bg-color{
+  background-color: rgb(9, 9, 51);
+  width: 100%;
+  height: 100%;
+
+}
+/* .customclass{
+  z-index: 99999;
+} */
+.dashboard-line-job{
+    height:4px;
+    background:rgb(214, 178, 15);
+}
+.dashboard-line-proposal{
+  height:4px;
+  background: red;
+}
+.dashboard-line-review{
+  height:4px;
+  background: blue;
+}

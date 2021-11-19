@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import {Routes,Route , } from "react-router-dom";
+import { ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-function App() {
+
+import Login from "./pages/Loging";
+import Dashboard from "./pages/company/Dashboard";
+import JobAds from "./pages/company/JobAds";
+import Proposal from "./pages/company/Proposal";
+import Review from "./pages/company/Review";
+import Profile from "./pages/company/Profile";
+import Job from "./pages/company/Job";
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+   <>
+     <ToastContainer/>
+     <Routes>
+     <Route exact path = "/" element = {<Login/>}/>
+     <Route exact path = "/welcome" element = {<Login/>}/>
+     <Route exact path = "/dashboard" element = {<Dashboard/>}/>
+     <Route exact path = "/jobads" element = {<JobAds/>}/>
+     <Route exact path = "/proposal" element = {<Proposal/>}/>
+     <Route exact path = "/review" element = {<Review/>}/>
+     <Route exact path = "/profile" element = {<Profile/>}/>
+     <Route exact path = "/job/:id" element = {<Job/>}/>
+
+
+   </Routes>
+   </>
   );
-}
+};
 
 export default App;
