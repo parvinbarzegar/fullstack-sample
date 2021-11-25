@@ -6,11 +6,16 @@ const router = express.Router();
 const {
     login,
     logout,
-    register
+    register,
+    currentUser
 } = require("../controllers/user");
+
+//import middlewares
+const {authCheck} = require('../controllers/middlewares');
 
 router.post('/login', login);
 router.get('/logout', logout);
+router.post('/current-user', authCheck,currentUser);
 router.post('/register', register);
 
 module.exports = router;

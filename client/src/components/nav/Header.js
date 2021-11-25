@@ -34,6 +34,7 @@ const Header = () => {
             type: "LOGOUT",
             payload : null
           });
+          localStorage.removeItem("token");
           navigate("/welcome");
        })
        
@@ -60,7 +61,7 @@ const Header = () => {
             {user && <SubMenu key="SubMenu"
                         className="float-end customclass p-1"
                         icon={<UserOutlined/>}
-                        title={user.name}
+                        title={user.username}
                         style={{ marginLeft: 'auto' }}
                      >
                         {user && (

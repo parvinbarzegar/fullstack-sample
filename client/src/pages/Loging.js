@@ -22,14 +22,16 @@ const Login = () => {
         .then( (res)=> { 
         //  console.log(res.data);
                       if(res.data){
+                        localStorage.setItem('token', JSON.stringify(res.data.token));
                         dispatch({
                           type: "LOGGED_IN_USER",
                           payload: {
-                              name: res.data.name,
-                              email: res.data.email,
-                              role: res.data.user_role,
-                              _id: res.data._id,
-                              username : res.data.username
+                              name: res.data.user.name,
+                              email: res.data.user.email,
+                              role: res.data.user.user_role,
+                              _id: res.data.user._id,
+                              username : res.data.user.username,
+                              token: res.data.token
                          }
                       });
                       setLoading(false);

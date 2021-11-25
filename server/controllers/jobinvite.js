@@ -50,102 +50,111 @@ exports.jobInvite = async (req,res) => {
 };
 
 exports.searchJobInvites = async (req,res) => {
-    let filter = {};
-
-    let bt = ""
+    let location = {};
+    let servicetype = {}
+    let boattype = { }
+    let jobtype = {}
     let obj_entities = Object.entries(req.body)
     for (const [k, v] of obj_entities) {
         if(v!="" && k == 'boat_type'){
-            filter['_boattype'] = {'name' : v};
-            bt = v;
+           boattype.name = v;
             continue;
         }
         if(v!="" && k == 'service_type'){
-            filter['_serivce'] = {'name' : v};
+            servicetype.name = v;
             continue;
         }
         if(v!="" && k == 'location'){
-            filter['_user'] = {'address' : v};
+            location.address = v;
             continue;
         }
-        if(v!="" && k == 'jobtype'){
-            filter['_job'] = {'is_emergency' : v};
-            console.log("see here");
+        if( k == 'jobtype'){
+            jobtype.is_emergency = v;
+            // console.log("see here");
             continue;
         }
   
      }
-    const agg = await JobInvite.aggregate([
-        {
-            $lookup:
-            {
-                "from": "jobs",
-                "localField": "job",
-                "foreignField": "_id",
-                "as": "_job"
-            }
-        },
-        {
-            $lookup:
-            {
-                "from": "companies",
-                "localField": "company",
-                "foreignField": "_id",
-                "as": "_company"
-            }
-        },
-        {
-            $lookup:
-            {
-                "from": "boats",
-                "localField": "_job.boat",
-                "foreignField": "_id",
-                "as": "_boat"
-            }
-        },
-        {
-            $lookup:
-            {
-                "from": "boatsubtypes",
-                "localField": "_boat.boatSubType",
-                "foreignField": "_id",
-                "as": "_boatsubtype"
-            }
-        },
-        {
-            $lookup:
-            {
-                "from": "boattypes",
-                "localField": "_boatsubtype.boat_type",
-                "foreignField": "_id",
-                "as": "_boattype"
-            }
-        },
-        {
-            $lookup:
-            {
-                "from": "users",
-                "localField": "_job.user",
-                "foreignField": "_id",
-                "as": "_user"
-            }
-        },
-        {
-            $lookup:
-            {
-                "from": "services",
-                "localField": "_job.service",
-                "foreignField": "_id",
-                "as": "_serivce"
-            }
-        },
-        {
-            $match: {
-                  "_boattype.name": 'Motor Boats' 
+
+     const jobinvite = await JobInvite.find({})
+     .populate({path:'company', populate :{path: "user"}})
+     .populate({path : "job",jobtype,populate:{path:'boat', populate : {path: "boatSubType" , populate : {path : "boat_type" , boattype},},},})
+     .populate({path: "job",populate:{path: "service", servicetype}})
+     .populate({path: "job",populate:{path: "user" , location}})
+     .sort([["createdAt" , "desc"]])
+     .exec();
+     
+    // const agg = await JobInvite.aggregate([
+    //     {
+    //         $lookup:
+    //         {
+    //             "from": "jobs",
+    //             "localField": "job",
+    //             "foreignField": "_id",
+    //             "as": "_job"
+    //         }
+    //     },
+    //     {
+    //         $lookup:
+    //         {
+    //             "from": "companies",
+    //             "localField": "company",
+    //             "foreignField": "_id",
+    //             "as": "_company"
+    //         }
+    //     },
+    //     {
+    //         $lookup:
+    //         {
+    //             "from": "boats",
+    //             "localField": "_job.boat",
+    //             "foreignField": "_id",
+    //             "as": "_boat"
+    //         }
+    //     },
+    //     {
+    //         $lookup:
+    //         {
+    //             "from": "boatsubtypes",
+    //             "localField": "_boat.boatSubType",
+    //             "foreignField": "_id",
+    //             "as": "_boatsubtype"
+    //         }
+    //     },
+    //     {
+    //         $lookup:
+    //         {
+    //             "from": "boattypes",
+    //             "localField": "_boatsubtype.boat_type",
+    //             "foreignField": "_id",
+    //             "as": "_boattype"
+    //         }
+    //     },
+    //     {
+    //         $lookup:
+    //         {
+    //             "from": "users",
+    //             "localField": "_job.user",
+    //             "foreignField": "_id",
+    //             "as": "_user"
+    //         }
+    //     },
+    //     {
+    //         $lookup:
+    //         {
+    //             "from": "services",
+    //             "localField": "_job.service",
+    //             "foreignField": "_id",
+    //             "as": "_serivce"
+    //         }
+    //     },
+    //     {
+    //         $match: {
+    //               "_boattype.name": 'Motor Boats' 
                 
-            }
-        }
-    ]).exec();
+    //         }
+    //     }
+    // ]).exec();
    
     console.log(agg);
     res.json(agg);

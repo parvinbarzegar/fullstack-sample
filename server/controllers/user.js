@@ -1,5 +1,6 @@
 const User = require('../modules/user');
 const passport = require('passport');
+var jwt = require('jsonwebtoken');
 
 exports.login =  (req , res) => {
     const user = new User({
@@ -11,12 +12,16 @@ exports.login =  (req , res) => {
           console.log(err);
         }else{
           passport.authenticate("local")(req,res, function(){
-            console.log(req.user.user_role);
+          //  console.log(req.user.user_role);
             if(req.user.user_role.toString() !=="61916d2a1bef7aa72a15437e"){
               req.logout();
               res.json(null);
             }else{
-              res.json(req.user);
+              var token = jwt.sign({username: user.username}, 'secret',{expiresIn : '1h'});
+              res.json({
+                user ,
+                token
+              });
             }
             
           });
@@ -55,4 +60,13 @@ exports.logout = (req , res) => {
  res.json({
      data : 'log out'
  });
+};
+
+exports.currentUser = async (req, res)=>{
+
+  console.log("username",req.username);
+  await User.findOne({username: req.username}).exec((err,user)=>{
+      if (err) throw new Error(err);
+      res.json(user);
+  });
 };
